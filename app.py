@@ -308,122 +308,119 @@ class Me:
             return f"Hubo un error de conexión con la IA: {str(e)}"
     
 
-if __name__ == "__main__":
-    print("Iniciando la aplicación...")
-    me = Me()
-    print("Aplicación iniciada. Abre http://localhost:8002 en tu navegador.")
-    
-    with gr.Blocks() as demo:
-        # Inject CSS and JS via HTML component for reliability
-        gr.HTML("""
-        <style>
-            /* === RESET & BASE === */
-            body, .gradio-container {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                height: 100vh !important;
-                overflow: hidden !important;
-                display: flex !important;
-                flex-direction: column !important;
-                background: #efeae2 !important; /* Standard Light Background */
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-            }
-            
-            footer, header { display: none !important; }
-            h1, h2, h3 { display: none !important; }
-            .show-api { display: none !important; }
+print("Iniciando la interfaz de Gradio...")
 
-            /* === BUBBLES BASE (LIGHT THEME - DEFAULT) === */
-            .message-row { background: transparent !important; border: none !important; padding: 4px 0 !important; margin-bottom: 4px !important; }
-            .message { border: none !important; max-width: 85% !important; font-size: 15px !important; box-shadow: 0 1px 0.5px rgba(0,0,0,0.1) !important; }
-            
-            /* Bot Bubble (White) */
-            .message.bot { 
-                background-color: #ffffff !important; 
-                color: #111b21 !important; 
-                border-radius: 0px 12px 12px 12px !important; 
-                margin-right: auto !important; 
-            }
-            .message.bot * { color: #111b21 !important; } /* Force black text */
-
-            /* User Bubble (Light Green) */
-            .message.user { 
-                background-color: #d9fdd3 !important; 
-                color: #111b21 !important; 
-                border-radius: 12px 12px 0px 12px !important; 
-                margin-left: auto !important; 
-            }
-            .message.user * { color: #111b21 !important; } /* Force black text */
-
-            /* Remove Avatars */
-            .avatar-container { display: none !important; }
-
-            /* INPUT AREA - LIGHT MODE */
-            .row { background-color: #f0f2f5 !important; padding: 10px !important; }
-            .wrap { background-color: #ffffff !important; border-radius: 24px !important; border: none !important; padding: 4px 15px !important; }
-            textarea { color: #111b21 !important; background: transparent !important; font-size: 15px !important; }
-            textarea::placeholder { color: #8696a0 !important; }
-            
-            /* Send Button */
-            button.primary { background-color: #00a884 !important; color: #ffffff !important; border-radius: 50% !important; border: none !important; }
-
-            /* === DASHBOARD MODE OVERRIDES (DARK THEME) === */
-            body.dashboard-mode { background: #0b141a !important; }
-            body.dashboard-mode .gradio-container { background: #0b141a !important; }
-            
-            body.dashboard-mode .message.bot { background-color: #202c33 !important; color: #ffffff !important; }
-            body.dashboard-mode .message.bot * { color: #ffffff !important; }
-
-            body.dashboard-mode .message.user { background-color: #005c4b !important; color: #ffffff !important; }
-            body.dashboard-mode .message.user * { color: #ffffff !important; }
-
-            body.dashboard-mode .row { background-color: #202c33 !important; }
-            body.dashboard-mode .wrap { background-color: #2a3942 !important; }
-            body.dashboard-mode textarea { color: #ffffff !important; }
-            
-            /* Clean up Gradio default tabs */
-            .tabs { border: none !important; }
-            .tab-nav { display: none !important; }
-        </style>
+with gr.Blocks() as demo:
+    # Inject CSS and JS via HTML component for reliability
+    gr.HTML("""
+    <style>
+        /* === RESET & BASE === */
+        body, .gradio-container {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background: #efeae2 !important; /* Standard Light Background */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+        }
         
-        <script>
-            function setViewMode() {
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('view') === 'dashboard') {
-                    document.body.classList.add('dashboard-mode');
-                    document.body.classList.remove('public-mode');
-                } else {
-                    document.body.classList.add('public-mode');
-                    document.body.classList.remove('dashboard-mode');
-                }
+        footer, header { display: none !important; }
+        h1, h2, h3 { display: none !important; }
+        .show-api { display: none !important; }
+
+        /* === BUBBLES BASE (LIGHT THEME - DEFAULT) === */
+        .message-row { background: transparent !important; border: none !important; padding: 4px 0 !important; margin-bottom: 4px !important; }
+        .message { border: none !important; max-width: 85% !important; font-size: 15px !important; box-shadow: 0 1px 0.5px rgba(0,0,0,0.1) !important; }
+        
+        /* Bot Bubble (White) */
+        .message.bot { 
+            background-color: #ffffff !important; 
+            color: #111b21 !important; 
+            border-radius: 0px 12px 12px 12px !important; 
+            margin-right: auto !important; 
+        }
+        .message.bot * { color: #111b21 !important; } /* Force black text */
+
+        /* User Bubble (Light Green) */
+        .message.user { 
+            background-color: #d9fdd3 !important; 
+            color: #111b21 !important; 
+            border-radius: 12px 12px 0px 12px !important; 
+            margin-left: auto !important; 
+        }
+        .message.user * { color: #111b21 !important; } /* Force black text */
+
+        /* Remove Avatars */
+        .avatar-container { display: none !important; }
+
+        /* INPUT AREA - LIGHT MODE */
+        .row { background-color: #f0f2f5 !important; padding: 10px !important; }
+        .wrap { background-color: #ffffff !important; border-radius: 24px !important; border: none !important; padding: 4px 15px !important; }
+        textarea { color: #111b21 !important; background: transparent !important; font-size: 15px !important; }
+        textarea::placeholder { color: #8696a0 !important; }
+        
+        /* Send Button */
+        button.primary { background-color: #00a884 !important; color: #ffffff !important; border-radius: 50% !important; border: none !important; }
+
+        /* === DASHBOARD MODE OVERRIDES (DARK THEME) === */
+        body.dashboard-mode { background: #0b141a !important; }
+        body.dashboard-mode .gradio-container { background: #0b141a !important; }
+        
+        body.dashboard-mode .message.bot { background-color: #202c33 !important; color: #ffffff !important; }
+        body.dashboard-mode .message.bot * { color: #ffffff !important; }
+
+        body.dashboard-mode .message.user { background-color: #005c4b !important; color: #ffffff !important; }
+        body.dashboard-mode .message.user * { color: #ffffff !important; }
+
+        body.dashboard-mode .row { background-color: #202c33 !important; }
+        body.dashboard-mode .wrap { background-color: #2a3942 !important; }
+        body.dashboard-mode textarea { color: #ffffff !important; }
+        
+        /* Clean up Gradio default tabs */
+        .tabs { border: none !important; }
+        .tab-nav { display: none !important; }
+    </style>
+    
+    <script>
+        function setViewMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('view') === 'dashboard') {
+                document.body.classList.add('dashboard-mode');
+                document.body.classList.remove('public-mode');
+            } else {
+                document.body.classList.add('public-mode');
+                document.body.classList.remove('dashboard-mode');
             }
-            window.addEventListener('load', setViewMode);
-            setInterval(setViewMode, 500);
-        </script>
-        """)
+        }
+        window.addEventListener('load', setViewMode);
+        setInterval(setViewMode, 500);
+    </script>
+    """)
 
-        # Chat Interface fills available space
-        with gr.Group(elem_classes="chat-interface"):
-            gr.ChatInterface(
-                me.chat,
-                title="",
-                description=None,
-                retry_btn=None,
-                undo_btn=None,
-                clear_btn=None,
-                submit_btn="➤",
-                multimodal=True,
-            )
+    # Chat Interface fills available space
+    with gr.Group(elem_classes="chat-interface"):
+        gr.ChatInterface(
+            get_me().chat,
+            title="",
+            description=None,
+            retry_btn=None,
+            undo_btn=None,
+            clear_btn=None,
+            submit_btn="➤",
+            multimodal=True,
+        )
 
-        # Compact Footer at the bottom
-        gr.HTML("""
-        <div style="text-align: center; padding: 8px; background: #f0fdf4; border-top: 1px solid #dcfce7;">
-            <p style="margin: 0; font-size: 11px; color: #166534; line-height: 1.2;">
-                ¿Atención inmediata? <strong>Escribe tu número</strong> y te contactamos.
-            </p>
-        </div>
-        """)
+    # Compact Footer at the bottom
+    gr.HTML("""
+    <div style="text-align: center; padding: 8px; background: #f0fdf4; border-top: 1px solid #dcfce7;">
+        <p style="margin: 0; font-size: 11px; color: #166534; line-height: 1.2;">
+            ¿Atención inmediata? <strong>Escribe tu número</strong> y te contactamos.
+        </p>
+    </div>
+    """)
 # We need FastAPI to inject CORS headers properly for external domains
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
