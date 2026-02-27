@@ -425,7 +425,8 @@ if __name__ == "__main__":
         </div>
         """)
 # We need FastAPI to inject CORS headers properly for external domains
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -437,6 +438,35 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+me_instance = Me()
+
+@app.get("/ping")
+async def ping():
+    return {"status": "ok", "api_ready": me_instance.api_ready}
+
+@app.post("/api/chat")
+async def api_chat(request: Request):
+    try:
+        data = await request.json()
+        message = data.get("message", "")
+        # Gradio history is usually a list of lists: [[user, bot], [user, bot]]
+        history = data.get("history", [])
+        
+        print(f"DEBUG API: Recibida petición. Mensaje: {message}")
+        
+        reply = me_instance.chat(message, history)
+        
+        return JSONResponse(content={
+            "output": reply,
+            "status": "success"
+        })
+    except Exception as e:
+        print(f"ERROR API: {str(e)}")
+        return JSONResponse(content={
+            "output": f"Error en el servidor del agente: {str(e)}",
+            "status": "error"
+        }, status_code=500)
 
 app = gr.mount_gradio_app(app, demo, path="/")
 
