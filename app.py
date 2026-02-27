@@ -486,6 +486,7 @@ async def api_chat(request: Request):
 app = gr.mount_gradio_app(app, demo, path="/")
 
 if __name__ == "__main__":
-    print("Iniciando con soporte CORS en el puerto 8003...")
-    uvicorn.run(app, host="0.0.0.0", port=8003)
+    port = int(os.getenv("PORT", 8003))
+    print(f"Iniciando con soporte CORS en el puerto {port}...")
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
