@@ -423,9 +423,9 @@ with gr.Blocks() as demo:
             get_me().chat,
             title="",
             description=None,
-            retry_btn=None,
-            undo_btn=None,
-            clear_btn=None,
+            show_retry_btn=False,
+            show_undo_btn=False,
+            show_clear_btn=False,
             submit_btn="➤",
             multimodal=True,
         )
