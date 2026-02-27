@@ -315,6 +315,16 @@ class Me:
             return f"Hubo un error de conexión con la IA: {str(e)}"
     
 
+# Global instances
+me_instance = None
+
+def get_me():
+    global me_instance
+    if me_instance is None:
+        print("DEBUG: Initializing ME instance...")
+        me_instance = Me()
+    return me_instance
+
 print("Iniciando la interfaz de Gradio...")
 
 with gr.Blocks() as demo:
@@ -428,6 +438,7 @@ with gr.Blocks() as demo:
         </p>
     </div>
     """)
+
 # FastAPI Application Setup
 app = FastAPI()
 
@@ -437,16 +448,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Global instances
-me_instance = None
-
-def get_me():
-    global me_instance
-    if me_instance is None:
-        print("DEBUG: Initializing ME instance...")
-        me_instance = Me()
-    return me_instance
 
 @app.on_event("startup")
 async def startup_event():
