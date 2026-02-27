@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+.idea/
+.vscode/
+venv/
+virtualenv/
+env/
+*.log
+agente.zip
