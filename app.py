@@ -1,15 +1,22 @@
+import os
+print("BOOT: Defining Gradio environment variables...")
+os.environ["GRADIO_ANALYTICS_ENABLED"] = "False"
+os.environ["GRADIO_SERVER_NAME"] = "0.0.0.0"
+
 from dotenv import load_dotenv
 from openai import OpenAI
 import json
-import os
 import requests
 from pypdf import PdfReader
 import gradio as gr
 import base64
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
-
+print("BOOT: Imports completed. Setting up paths...")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-os.environ["GRADIO_ANALYTICS_ENABLED"] = "False"
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"), override=True)
 
 def push(text):
@@ -421,15 +428,7 @@ with gr.Blocks() as demo:
         </p>
     </div>
     """)
-# We need FastAPI to inject CORS headers properly for external domains
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-
-os.environ["GRADIO_ANALYTICS_ENABLED"] = "False"
-os.environ["GRADIO_SERVER_NAME"] = "0.0.0.0"
-
+# FastAPI Application Setup
 app = FastAPI()
 
 app.add_middleware(
