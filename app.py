@@ -430,6 +430,9 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+os.environ["GRADIO_ANALYTICS_ENABLED"] = "False"
+os.environ["GRADIO_SERVER_NAME"] = "0.0.0.0"
+
 app = FastAPI()
 
 app.add_middleware(
@@ -439,17 +442,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-me_instance = Me()
+# Global instances
+me_instance = None
+
+def get_me():
+    global me_instance
+    if me_instance is None:
+        print("DEBUG: Initializing ME instance...")
+        me_instance = Me()
+    return me_instance
+
+@app.on_event("startup")
+async def startup_event():
+    print("SERVER STARTUP: Establishing API connections...")
+    get_me()
+    print(f"SERVER READY: API Ready = {me_instance.api_ready}")
 
 @app.get("/ping")
 async def ping():
-    return {"status": "ok", "api_ready": me_instance.api_ready}
+    me = get_me()
+    return {"status": "ok", "api_ready": me.api_ready, "timestamp": str(os.getloadavg())}
 
 @app.get("/debug")
 async def debug():
+    me = get_me()
     key = os.getenv("OPENAI_API_KEY")
     return {
-        "api_ready": me_instance.api_ready,
+        "api_ready": me.api_ready,
         "key_present": bool(key),
         "key_prefix": key[:4] + "..." if key else None,
         "env_vars": list(os.environ.keys())[:10], # Show first 10 keys for context
@@ -465,11 +484,12 @@ async def api_chat(request: Request):
         
         print(f"DEBUG API: Request received. Message: {message}")
         
-        if not me_instance.api_ready:
+        me = get_me()
+        if not me.api_ready:
             print("ERROR API: OpenAI API not ready (check API Key in Render Environment Variables)")
             return JSONResponse(content={"output": "Error: El servidor no tiene configurada la API KEY de OpenAI.", "status": "error"}, status_code=500)
 
-        reply = me_instance.chat(message, history)
+        reply = me.chat(message, history)
         print(f"DEBUG API: AI Reply generated (len={len(reply)})")
         
         return JSONResponse(content={
