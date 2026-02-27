@@ -445,17 +445,32 @@ me_instance = Me()
 async def ping():
     return {"status": "ok", "api_ready": me_instance.api_ready}
 
+@app.get("/debug")
+async def debug():
+    key = os.getenv("OPENAI_API_KEY")
+    return {
+        "api_ready": me_instance.api_ready,
+        "key_present": bool(key),
+        "key_prefix": key[:4] + "..." if key else None,
+        "env_vars": list(os.environ.keys())[:10], # Show first 10 keys for context
+        "base_dir": BASE_DIR
+    }
+
 @app.post("/api/chat")
 async def api_chat(request: Request):
     try:
         data = await request.json()
         message = data.get("message", "")
-        # Gradio history is usually a list of lists: [[user, bot], [user, bot]]
         history = data.get("history", [])
         
-        print(f"DEBUG API: Recibida petición. Mensaje: {message}")
+        print(f"DEBUG API: Request received. Message: {message}")
         
+        if not me_instance.api_ready:
+            print("ERROR API: OpenAI API not ready (check API Key in Render Environment Variables)")
+            return JSONResponse(content={"output": "Error: El servidor no tiene configurada la API KEY de OpenAI.", "status": "error"}, status_code=500)
+
         reply = me_instance.chat(message, history)
+        print(f"DEBUG API: AI Reply generated (len={len(reply)})")
         
         return JSONResponse(content={
             "output": reply,
